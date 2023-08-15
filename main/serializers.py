@@ -2,7 +2,7 @@
 accounts serializers.py file.
 '''
 from rest_framework import serializers
-from .models import Candidate, Employer, JobSector, JobType, SalaryType
+from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, Industry, CompanyProfile
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -15,6 +15,7 @@ class CandidateSerializer(serializers.ModelSerializer):
         '''
         model = Candidate
         fields = '__all__'
+        depth = 1
 
 
 class EmployerSerializer(serializers.ModelSerializer):
@@ -27,6 +28,7 @@ class EmployerSerializer(serializers.ModelSerializer):
         '''
         model = Employer
         fields = '__all__'
+        depth = 1
     #     extra_kwargs = {'password': {'write_only': True},
     #                     'confirm_password': {'write_only': True}}
 
@@ -73,3 +75,44 @@ class SalaryTypeSerializer(serializers.ModelSerializer):
         '''
         model = SalaryType
         fields = '__all__'
+
+
+class IndustrySerializer(serializers.ModelSerializer):
+    '''
+    serializer for JobSector
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = Industry
+        fields = '__all__'
+
+
+class PostJobSerializer(serializers.ModelSerializer):
+    '''
+    serializer for PostJob
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = PostJob
+        # fields = '__all__'
+        # extra_fields = ['related_jobs']
+        fields = ['id', 'title', 'employer', 'description', 'application_deadline', 'job_type', 'job_sector',
+                  'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'job_image', 'experience', 'Qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_jobs']
+        depth = 1
+
+
+class CompanyProfileSerializer(serializers.ModelSerializer):
+    '''
+    srializer for CompanyProfile
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = CompanyProfile
+        fields = '__all__'
+        depth = 1
