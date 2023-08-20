@@ -2,7 +2,7 @@
 urls.py
 '''
 from django.urls import path
-from .views import EmployerList, EmployerDetail, employer_login, CandidateList, CandidateDetail, candidate_login, JobSectorList, JobSectorDetail, JobTypeList, SalaryTypeList, IndustryList, Job, SpecificJob, Internship, SpecificInternship, EmployerJob, CompanyProfileList, CompanyProfileDetails, CandidateJobApplicationList, fetch_apply_status, CandidateJobAppliedData, CandidateJobAppliedDetails
+from .views import EmployerList, EmployerDetail, employer_login, CandidateList, CandidateDetail, candidate_login, JobSectorList, JobSectorDetail, JobTypeList, SalaryTypeList, IndustryList, Job, SpecificJob, Internship, SpecificInternship, EmployerJob, CompanyProfileList, CompanyProfileDetails, CandidateJobApplicationList, fetch_apply_status_job, CandidateJobAppliedData, CandidateJobAppliedDetails, CandidateInternshipApplicationList, fetch_apply_status_internship, CandidateInternshipAppliedData, CandidateInternshipAppliedDetails
 
 urlpatterns = [
     # for employers
@@ -47,18 +47,28 @@ urlpatterns = [
     path('companyProfile/<int:pk>',
          CompanyProfileDetails.as_view(), name="CompanyProfileDetails"),
 
-    # Candidate jobs Aplications for applying jobs
+    # Candidate jobs Aplications for applying jobs, internships
     path('candidate-job-apply/', CandidateJobApplicationList.as_view(),
          name="Candidate_apply_jobs"),
+    path('candidate-internship-apply/', CandidateInternshipApplicationList.as_view(),
+         name="Candidate_apply_internships"),
 
-    path('fetch-apply-status/<int:candidate_id>/<int:job_id>',
-         fetch_apply_status, name="candidate_apply_status"),
+    # fetching status information
+    path('fetch-apply-status-job/<int:candidate_id>/<int:job_id>',
+         fetch_apply_status_job, name="candidate_job_apply_status"),
+    path('fetch-apply-status-internship/<int:candidate_id>/<int:internship_id>',
+         fetch_apply_status_internship, name="candidate_internship_apply_status"),
 
-    # url to get all applied jobs for individual candidate
+    # url to get all applied jobs or internships for individual candidate
     path('fetch-applied-jobs/<int:candidate_id>',
          CandidateJobAppliedData.as_view(), name="applied_jobs"),
+    path('fetch-applied-internships/<int:candidate_id>',
+         CandidateInternshipAppliedData.as_view(), name="applied_internships"),
 
-    # url to get retrieve, update and delete specified applied jobs for individual candidate
+    # url to get retrieve, update and delete specified applied jobs or internships for individual candidate
     path('applied-jobs-details/<int:pk>',
-         CandidateJobAppliedDetails.as_view(), name="applied_jobs_details"),
+         CandidateJobAppliedDetails.as_view(), name="applied_job_details"),
+    path('applied-internships-details/<int:pk>',
+         CandidateInternshipAppliedDetails.as_view(), name="applied_internship_details"),
+
 ]

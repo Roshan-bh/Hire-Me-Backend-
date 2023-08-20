@@ -2,7 +2,7 @@
 accounts serializers.py file.
 '''
 from rest_framework import serializers
-from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, PostInternship, Industry, CompanyProfile, CandidateJobApplication
+from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, PostInternship, Industry, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -102,7 +102,7 @@ class PostJobSerializer(serializers.ModelSerializer):
         # extra_fields = ['related_jobs']
         fields = ['id', 'title', 'employer', 'description', 'application_deadline', 'job_type', 'job_sector',
                   'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'job_image', 'experience', 'qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_jobs']
-        depth = 1
+        depth = 2
 
 
 class PostInternshipSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class PostInternshipSerializer(serializers.ModelSerializer):
         # extra_fields = ['related_jobs']
         fields = ['id', 'title', 'employer', 'description', 'application_deadline', 'internship_type', 'internship_sector',
                   'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'internship_image', 'experience', 'qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_internships']
-        depth = 1
+        depth = 2
 
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
@@ -143,5 +143,18 @@ class CandidateJobApplicationSerializer(serializers.ModelSerializer):
         meta information
         '''
         model = CandidateJobApplication
+        fields = '__all__'
+        depth = 2
+
+
+class CandidateInternshipApplicationSerializer(serializers.ModelSerializer):
+    '''
+    srializer for CandidateInternshipApplication
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = CandidateInternshipApplication
         fields = '__all__'
         depth = 2

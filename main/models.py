@@ -210,7 +210,7 @@ class PostJob(models.Model):
         method to get related jobs.
         '''
         related_jobs = PostJob.objects.filter(
-            required_skills__icontains=self.required_skills)
+            required_skills__icontains=self.required_skills).exclude(id=self.id)
         return serializers.serialize('json', related_jobs)
 
 
@@ -286,3 +286,24 @@ class PostInternship(models.Model):
         related_internships = PostInternship.objects.filter(
             required_skills__icontains=self.required_skills)
         return serializers.serialize('json', related_internships)
+
+
+class CandidateInternshipApplication(models.Model):
+    '''
+    CandidateInternshipApplication class
+    '''
+    id = models.AutoField(primary_key=True)
+    internship = models.ForeignKey(
+        PostInternship, on_delete=models.CASCADE, related_name="appied_internship")
+    candidate = models.ForeignKey(
+        Candidate, on_delete=models.CASCADE,)
+    applied_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        '''
+        mata information
+        '''
+        verbose_name_plural = "11. CandidateInternshipApplications"
+
+    def __str__(self):
+        return f"{self.internship}-{self.candidate}"
