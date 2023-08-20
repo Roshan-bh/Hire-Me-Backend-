@@ -2,7 +2,7 @@
 accounts serializers.py file.
 '''
 from rest_framework import serializers
-from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, Industry, CompanyProfile
+from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, PostInternship, Industry, CompanyProfile, CandidateJobApplication
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -101,7 +101,23 @@ class PostJobSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         # extra_fields = ['related_jobs']
         fields = ['id', 'title', 'employer', 'description', 'application_deadline', 'job_type', 'job_sector',
-                  'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'job_image', 'experience', 'Qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_jobs']
+                  'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'job_image', 'experience', 'qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_jobs']
+        depth = 1
+
+
+class PostInternshipSerializer(serializers.ModelSerializer):
+    '''
+    serializer for PostInternship
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = PostInternship
+        # fields = '__all__'
+        # extra_fields = ['related_jobs']
+        fields = ['id', 'title', 'employer', 'description', 'application_deadline', 'internship_type', 'internship_sector',
+                  'required_skills', 'salary_type', 'salary_minimum', 'salary_maximum', 'internship_image', 'experience', 'qualification', 'industry', 'country', 'city', 'postal_code', 'exact_location', 'created_at', 'terms_conditions',  'related_internships']
         depth = 1
 
 
@@ -115,4 +131,17 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
         '''
         model = CompanyProfile
         fields = '__all__'
-        depth = 1
+        depth = 2
+
+
+class CandidateJobApplicationSerializer(serializers.ModelSerializer):
+    '''
+    srializer for CandidateJobApplication
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = CandidateJobApplication
+        fields = '__all__'
+        depth = 2

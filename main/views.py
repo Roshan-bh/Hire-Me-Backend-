@@ -8,8 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .serializers import EmployerSerializer, CandidateSerializer, JobSectorSerializer, JobTypeSerializer, SalaryTypeSerializer, PostJobSerializer, IndustrySerializer, CompanyProfileSerializer
-from .models import Candidate, Employer, JobType, JobSector, SalaryType, Industry, PostJob, CompanyProfile
+from .serializers import EmployerSerializer, CandidateSerializer, JobSectorSerializer, JobTypeSerializer, SalaryTypeSerializer, PostJobSerializer, PostInternshipSerializer, IndustrySerializer, CompanyProfileSerializer, CandidateJobApplicationSerializer
+from .models import Candidate, Employer, JobType, JobSector, SalaryType, Industry, PostJob, PostInternship, CompanyProfile, CandidateJobApplication
 
 # Create your views here.
 
@@ -149,6 +149,32 @@ class SpecificJob(generics.RetrieveUpdateDestroyAPIView):
         return PostJob.objects.filter(id=job_id)
 
 
+class Internship(generics.ListCreateAPIView):
+    '''
+    class Internship
+    '''
+    queryset = PostInternship.objects.all()
+    serializer_class = PostInternshipSerializer
+
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        if 'result' in self.request.GET:
+            limit = int(self.request.GET['result'])
+            query_set = PostInternship.objects.all().order_by('-id')[:limit]
+        return query_set
+
+
+class SpecificInternship(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    class SpecificInternship
+    '''
+    serializer_class = PostInternshipSerializer
+
+    def get_queryset(self):
+        Internship_id = self.kwargs['pk']
+        return PostJob.objects.filter(id=Internship_id)
+
+
 class EmployerJob(generics.ListAPIView):
     '''
     class EmployerJob
@@ -161,9 +187,60 @@ class EmployerJob(generics.ListAPIView):
         return PostJob.objects.filter(employer=employer)
 
 
+class CompanyProfileList(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    class CompanyProfileDetails
+    '''
+    queryset = CompanyProfile.objects.all()
+    serializer_class = CompanyProfileSerializer
+
+
 class CompanyProfileDetails(generics.ListCreateAPIView):
     '''
     class CompanyProfileDetails
     '''
     queryset = CompanyProfile.objects.all()
     serializer_class = CompanyProfileSerializer
+
+
+class CandidateJobApplicationList(generics.ListCreateAPIView):
+    '''CandidateJobApplicationList class'''
+
+    queryset = CandidateJobApplication.objects.all()
+    serializer_class = CandidateJobApplicationSerializer
+
+
+def fetch_apply_status(request, candidate_id, job_id):
+    '''
+    to check whether a candidate applied for a job.
+    '''
+    candidate = Candidate.objects.filter(id=candidate_id).first()
+    job = PostJob.objects.filter(id=job_id).first()
+    apply_status = CandidateJobApplication.objects.filter(
+        job=job, candidate=candidate).count()
+    if apply_status:
+        return JsonResponse({'bool': True})
+    else:
+        return JsonResponse({'bool': False})
+
+
+class CandidateJobAppliedData(generics.ListAPIView):
+    '''
+    class CandidateJobAppliedData
+    '''
+    queryset = CandidateJobApplication.objects.all()
+    serializer_class = CandidateJobApplicationSerializer
+
+    def get_queryset(self):
+        if 'candidate_id' in self.kwargs:
+            candidate_id = self.kwargs['candidate_id']
+            candidate = Candidate.objects.get(pk=candidate_id)
+            return CandidateJobApplication.objects.filter(candidate=candidate).distinct()
+
+
+class CandidateJobAppliedDetails(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    class CandidateJobAppliedData
+    '''
+    queryset = CandidateJobApplication.objects.all()
+    serializer_class = CandidateJobApplicationSerializer
