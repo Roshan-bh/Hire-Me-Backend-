@@ -284,7 +284,7 @@ class PostInternship(models.Model):
         method to get related internships.
         '''
         related_internships = PostInternship.objects.filter(
-            required_skills__icontains=self.required_skills)
+            required_skills__icontains=self.required_skills).exclude(id=self.id)
         return serializers.serialize('json', related_internships)
 
 

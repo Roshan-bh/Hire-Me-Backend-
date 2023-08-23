@@ -1,17 +1,30 @@
 '''
 views.py
 '''
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, JsonResponse
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, JsonResponse
+
 from .serializers import EmployerSerializer, CandidateSerializer, JobSectorSerializer, JobTypeSerializer, SalaryTypeSerializer, PostJobSerializer, PostInternshipSerializer, IndustrySerializer, CompanyProfileSerializer, CandidateJobApplicationSerializer, CandidateInternshipApplicationSerializer
 from .models import Candidate, Employer, JobType, JobSector, SalaryType, Industry, PostJob, PostInternship, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication
 
+
 # Create your views here.
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    '''
+    StandardResultsSetPagination class implementation
+    '''
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 2
 
 
 class EmployerList(generics.ListCreateAPIView):
@@ -129,6 +142,7 @@ class Job(generics.ListCreateAPIView):
     '''
     queryset = PostJob.objects.all()
     serializer_class = PostJobSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         query_set = super().get_queryset()
@@ -155,6 +169,7 @@ class Internship(generics.ListCreateAPIView):
     '''
     queryset = PostInternship.objects.all()
     serializer_class = PostInternshipSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         query_set = super().get_queryset()
@@ -180,6 +195,7 @@ class EmployerJob(generics.ListAPIView):
     class EmployerJob
     '''
     serializer_class = PostJobSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         employer_id = self.kwargs['employer_id']
@@ -253,11 +269,11 @@ class CandidateJobApplicationList(generics.ListCreateAPIView):
     serializer_class = CandidateJobApplicationSerializer
 
 
-def fetch_apply_status_job(request, candidate_id, job_id):
+def fetch_apply_status_job(request, user_id, job_id):
     '''
     to check whether a candidate applied for a job.
     '''
-    candidate = Candidate.objects.filter(id=candidate_id).first()
+    candidate = Candidate.objects.filter(id=user_id).first()
     job = PostJob.objects.filter(id=job_id).first()
     apply_status = CandidateJobApplication.objects.filter(
         job=job, candidate=candidate).count()
@@ -287,3 +303,43 @@ class CandidateJobAppliedDetails(generics.RetrieveUpdateDestroyAPIView):
     '''
     queryset = CandidateJobApplication.objects.all()
     serializer_class = CandidateJobApplicationSerializer
+
+
+@csrf_exempt
+def employer_change_password(request, employer_id):
+    '''
+    change Password for specific employer
+    '''
+    password = request.POST['password']
+    confirm_password = request.POST['confirm_password']
+
+    try:
+        employer_data = Employer.objects.get(id=employer_id)
+    except Employer.DoesNotExist:
+        employer_data = None
+    if employer_data:
+        Employer.objects.filter(id=employer_id).update(
+            password=password, confirm_password=confirm_password)
+        return JsonResponse({'bool': True, 'employer_id': employer_data.id})
+    if employer_data is None:
+        return JsonResponse({'bool': False})
+
+
+@csrf_exempt
+def candidate_change_password(request, candidate_id):
+    '''
+    change Password for specific candidate
+    '''
+    password = request.POST['password']
+    confirm_password = request.POST['confirm_password']
+
+    try:
+        candidate_data = Candidate.objects.get(id=candidate_id)
+    except Candidate.DoesNotExist:
+        candidate_data = None
+    if candidate_data:
+        Candidate.objects.filter(id=candidate_id).update(
+            password=password, confirm_password=confirm_password)
+        return JsonResponse({'bool': True})
+    if candidate_data is None:
+        return JsonResponse({'bool': False})

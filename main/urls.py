@@ -2,18 +2,22 @@
 urls.py
 '''
 from django.urls import path
-from .views import EmployerList, EmployerDetail, employer_login, CandidateList, CandidateDetail, candidate_login, JobSectorList, JobSectorDetail, JobTypeList, SalaryTypeList, IndustryList, Job, SpecificJob, Internship, SpecificInternship, EmployerJob, CompanyProfileList, CompanyProfileDetails, CandidateJobApplicationList, fetch_apply_status_job, CandidateJobAppliedData, CandidateJobAppliedDetails, CandidateInternshipApplicationList, fetch_apply_status_internship, CandidateInternshipAppliedData, CandidateInternshipAppliedDetails
+from .views import EmployerList, EmployerDetail, employer_login, CandidateList, CandidateDetail, candidate_login, JobSectorList, JobSectorDetail, JobTypeList, SalaryTypeList, IndustryList, Job, SpecificJob, Internship, SpecificInternship, EmployerJob, CompanyProfileList, CompanyProfileDetails, CandidateJobApplicationList, fetch_apply_status_job, CandidateJobAppliedData, CandidateJobAppliedDetails, CandidateInternshipApplicationList, fetch_apply_status_internship, CandidateInternshipAppliedData, CandidateInternshipAppliedDetails, employer_change_password, candidate_change_password
 
 urlpatterns = [
     # for employers
     path('employers/', EmployerList.as_view(), name="employers"),
     path('employer/<int:pk>', EmployerDetail.as_view(), name="employer"),
     path('employer_login/', employer_login, name="employer_login"),
+    path('employer-change-password/<int:employer_id>',
+         employer_change_password, name="employer-change-password"),
 
     # for candidates
     path('candidates/', CandidateList.as_view(), name="candidates"),
     path('candidate/<int:pk>', CandidateDetail.as_view(), name="employer"),
     path('candidate_login/', candidate_login, name="candidate_login"),
+    path('candidate-change-password/<int:candidate_id>',
+         candidate_change_password, name="employer-change-password"),
 
     # job sectors
     path('jobsectors/', JobSectorList.as_view(), name="jobsectors"),
@@ -54,7 +58,7 @@ urlpatterns = [
          name="Candidate_apply_internships"),
 
     # fetching status information
-    path('fetch-apply-status-job/<int:candidate_id>/<int:job_id>',
+    path('fetch-apply-status-job/<int:user_id>/<int:job_id>',
          fetch_apply_status_job, name="candidate_job_apply_status"),
     path('fetch-apply-status-internship/<int:candidate_id>/<int:internship_id>',
          fetch_apply_status_internship, name="candidate_internship_apply_status"),
