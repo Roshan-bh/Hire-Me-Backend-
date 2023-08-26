@@ -75,4 +75,5 @@ urlpatterns = [
     path('applied-internships-details/<int:pk>',
          CandidateInternshipAppliedDetails.as_view(), name="applied_internship_details"),
 
+
 ]

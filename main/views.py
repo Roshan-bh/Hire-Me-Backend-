@@ -11,8 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 
-from .serializers import EmployerSerializer, CandidateSerializer, JobSectorSerializer, JobTypeSerializer, SalaryTypeSerializer, PostJobSerializer, PostInternshipSerializer, IndustrySerializer, CompanyProfileSerializer, CandidateJobApplicationSerializer, CandidateInternshipApplicationSerializer
-from .models import Candidate, Employer, JobType, JobSector, SalaryType, Industry, PostJob, PostInternship, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication
+from .serializers import EmployerSerializer, CandidateSerializer, JobSectorSerializer, JobTypeSerializer, SalaryTypeSerializer, PostJobSerializer, PostInternshipSerializer, IndustrySerializer, CompanyProfileSerializer, CandidateJobApplicationSerializer, CandidateInternshipApplicationSerializer, ContactSerializer, FaqSerializer
+from .models import Candidate, Employer, JobType, JobSector, SalaryType, Industry, PostJob, PostInternship, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication, Contact, FAQ
 
 
 # Create your views here.
@@ -343,3 +343,19 @@ def candidate_change_password(request, candidate_id):
         return JsonResponse({'bool': True})
     if candidate_data is None:
         return JsonResponse({'bool': False})
+
+
+class ContactList(generics.ListCreateAPIView):
+    '''
+    ContactList class
+    '''
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+
+class FaqList(generics.ListCreateAPIView):
+    '''
+    FaqList class
+    '''
+    queryset = FAQ.objects.all()
+    serializer_class = FaqSerializer

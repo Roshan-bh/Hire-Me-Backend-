@@ -3,6 +3,7 @@ accounts models.py file to store the models related to the account.
 '''
 from django.db import models
 from django.core import serializers
+from django.core.mail import send_mail
 
 
 class Candidate(models.Model):
@@ -307,3 +308,53 @@ class CandidateInternshipApplication(models.Model):
 
     def __str__(self):
         return f"{self.internship}-{self.candidate}"
+
+
+class Contact(models.Model):
+    '''
+    Contact model
+    '''
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    subject = models.CharField(max_length=400)
+    mail = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        '''
+        meta information
+        '''
+        verbose_name_plural = "12. Contacts"
+
+    def __str__(self):
+        return str(self.mail)
+
+    def save(self, *args, **kwargs):
+        send_mail(
+            'Contact Message',
+            'Here is a message',
+            'hireme@gmail.com',
+            [self.mail],
+            fail_silently=False,
+            html_message=f'<p>{self.first_name + self.last_name}</p> <p>{self.message}</p>'
+        )
+        return super(Contact, self).save(*args, **kwargs)
+
+
+class FAQ(models.Model):
+    '''
+    FAQ model
+    '''
+    question = models.CharField(max_length=400)
+    answer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        '''
+        meta information
+        '''
+        verbose_name_plural = "12. FAQ's"
+
+    def __str__(self):
+        return str(self.question)

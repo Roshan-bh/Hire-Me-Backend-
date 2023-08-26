@@ -2,7 +2,7 @@
 accounts serializers.py file.
 '''
 from rest_framework import serializers
-from .models import Candidate, Employer, JobSector, JobType, SalaryType, PostJob, PostInternship, Industry, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication
+from .models import Candidate, Employer, JobSector, Contact, JobType, SalaryType, PostJob, PostInternship, Industry, CompanyProfile, CandidateJobApplication, CandidateInternshipApplication, FAQ
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -158,3 +158,27 @@ class CandidateInternshipApplicationSerializer(serializers.ModelSerializer):
         model = CandidateInternshipApplication
         fields = '__all__'
         depth = 2
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    '''
+    serializer for Contact
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = Contact
+        fields = '__all__'
+
+
+class FaqSerializer(serializers.ModelSerializer):
+    '''
+    serializer for FAQ
+    '''
+    class Meta:
+        '''
+        meta information
+        '''
+        model = FAQ
+        fields = '__all__'
